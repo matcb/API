@@ -19,10 +19,6 @@ main()
         await prisma.$disconnect()
     })
 
-
-
-
-
 app.post('/users', async (req, res) => {
     await prisma.user.create({
         data:{
@@ -37,8 +33,25 @@ app.post('/users', async (req, res) => {
 })
 
 app.get('/users', async (req,res) => {
-   const users = await prisma.user.findMany()
-   res.status(200).json(users)
+
+    let users = []
+
+    if(req.query){
+        users = await prisma.users.findMany({
+            where:{
+                name: req.query.name,
+                age: req.query.age,
+                email: req.query.email
+            }
+        })
+    } else {
+    
+    users = await prisma.user.findMany()
+
+    }
+
+    res.status(200).json(users)
+
 })
 
 app.put('/users/:id', async (req, res) => {
